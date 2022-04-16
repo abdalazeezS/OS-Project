@@ -4,13 +4,13 @@ public class Process {
 
     private int processId;
     private int arrivalTime;
-    private int cpuBurst;
+    private int cpuBurstTime;
     private int sizeIntBytes;
 
-    public Process(int processId, int arrivalTime, int cpuBurst, int sizeIntBytes) {
+    public Process(int processId, int arrivalTime, int cpuBurstTime, int sizeIntBytes) {
         this.processId = processId;
         this.arrivalTime = arrivalTime;
-        this.cpuBurst = cpuBurst;
+        this.cpuBurstTime = cpuBurstTime;
         this.sizeIntBytes = sizeIntBytes;
     }
 
@@ -22,8 +22,8 @@ public class Process {
         return arrivalTime;
     }
 
-    public int getCpuBurst() {
-        return cpuBurst;
+    public int getCpuBurstTime() {
+        return cpuBurstTime;
     }
 
     public int getSizeIntBytes() {
