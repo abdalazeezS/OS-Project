@@ -29,15 +29,21 @@ public class Execution {
     // list contains the start time for each process
     LinkedList<Integer> startTime;
 
-    /* List contains waiting time for each process computed using the equation
-       waiting time = start time - arrival time
+    /* 
+    List contains waiting time for each process computed using the equation
+    waiting time = start time - arrival time
      */
     LinkedList<Integer> waitingTime;
 
+    /* 
+    List contains trun around time for each process computed using the equation
+    turn aroun time = finish time - arrival time
+    */
     LinkedList<Integer> turnArounTime;
 
     void FCFC() {
         System.out.println("FCFC Shceduling Algorithm:\n");
+        
         //sort the processes based on the Arrival Time
         Collections.sort(list, new Comparator<Process>() {
             @Override
@@ -52,10 +58,6 @@ public class Execution {
             }
 
         });
-//        for (Process process : list) {
-//            System.out.print(process.getArrivalTime() + " ");
-//        }
-//        System.out.println();
 
         finishTime = new LinkedList<>();
         grantChartTimeLine = new LinkedList<>();
@@ -80,8 +82,9 @@ public class Execution {
                 finishTime.add(p.getCpuBurst() + finishTime.get(i - 1) + this.contextSwitch);
                 startTime.add(finishTime.get(i) - p.getCpuBurst());
 
-                /* when we reach the last process there is no need to display the context swithc after that
-                   so will display only the finish time
+                /* 
+                when we reach the last process there is no need to display the context swithc after that
+                so will display only the finish time
                  */
                 if (i == list.size() - 1) {
                     //System.out.print(finishTime.get(i));
@@ -96,33 +99,21 @@ public class Execution {
             }
         }
 
-//        System.out.println("Start time Array: ");
-//        for (int i = 0; i < startTime.size(); i++) {
-//            System.out.print(startTime.get(i) + " ");
-//        }
         waitingTime = new LinkedList<>();
 
         for (int i = 0; i < startTime.size(); i++) {
             waitingTime.add(startTime.get(i) - list.get(i).getArrivalTime());
         }
 
-//        System.out.println("Waiting Time Array: ");
-//        for (int i = 0; i < waitingTime.size(); i++) {
-//            System.out.print(waitingTime.get(i) + " " + list.get(i).getProcessId() + " ||");
-//        }
         turnArounTime = new LinkedList<>();
         for (int i = 0; i < list.size(); i++) {
             turnArounTime.add(finishTime.get(i) - list.get(i).getArrivalTime());
         }
-//        
-//        System.out.println("Turn Around time: ");
-//        for (int i = 0; i < turnArounTime.size(); i++) {
-//            System.out.print(turnArounTime.get(i) + " " + list.get(i).getProcessId() + " ||");
-//        }
+        
         System.out.println("");
 
-        // drawing the Grant Chart
-        print_rectangle(3, list.size()*16);
+        // drawing the Grant Chart, not a perfect rectangle but it is good :)
+        print_rectangle(3, list.size() * 16);
 
         System.out.println("Process ID      Waiting Time        Turn Aroung Time        Finish Time");
 
@@ -144,14 +135,15 @@ public class Execution {
         Map<Integer, int[]> map = new HashMap<Integer, int[]>();
 
         for (int i = 0; i < list.size(); i++) {
-            /* in each iteration we initilize the array with WT, TAT and FT 
-               then we add the process id with the associated values to the map
+            /* 
+            in each iteration we initilize the array with WT, TAT and FT 
+            then we add the process id with the associated values to the map
              */
             int[] arr = {waitingTime.get(i), turnArounTime.get(i), finishTime.get(i)};
             map.put(list.get(i).getProcessId(), arr);
 
             // in case you want to see how the output will be without the map
-            //System.out.println(list.get(i).getProcessId()+"     "+waitingTime.get(i)+"      "+turnArounTime.get(i)+"        "+finishTime.get(i));
+            //System.out.println(list.get(i).getProcessId() + "     " + waitingTime.get(i) + "      " + turnArounTime.get(i) + "        " + finishTime.get(i));
         }
 
         // printing the map elements
@@ -164,21 +156,18 @@ public class Execution {
         });
         System.out.println("");
 
-        
-        /************************
-         * 1) Averages Calculation for Finish Time, Waiting time, Turnaround time
-         * 2) CPU utilization
+        /*
+        **********************
+        1) Averages Calculation for Finish Time, Waiting time, Turnaround time
+        2) CPU utilization
          */
-        
-        
         double sumFinishTime = 0;
         for (int ft : finishTime) {
             sumFinishTime += ft;
         }
         double avgFinishTime = sumFinishTime / list.size();
-        System.out.println("Average Finish Time: " + avgFinishTime + " time unit");
+        System.out.println("Average Finish Time: " + avgFinishTime + " time unit.");
 
-        
         double sumWainting = 0;
         for (int wt : waitingTime) {
             sumWainting += wt;
@@ -186,7 +175,6 @@ public class Execution {
         double avgWaitingTime = sumWainting / list.size();
         System.out.println("Average Waiting Time: " + avgWaitingTime + " time unit.");
 
-        
         double sumTurnAroundTime = 0;
         for (int tat : turnArounTime) {
             sumTurnAroundTime += tat;
@@ -194,7 +182,6 @@ public class Execution {
         double avgTurnArounTime = sumTurnAroundTime / list.size();
         System.out.println("Average Turnaround Time: " + avgTurnArounTime + " time unit.");
 
-        
         double sumBurstTime = 0;
         for (Process process : list) {
             sumBurstTime += process.getCpuBurst();
@@ -212,6 +199,21 @@ public class Execution {
     }
 
     void SJF() {
+        
+        Collections.sort(list, new Comparator<Process>() {
+            @Override
+            public int compare(Process o1, Process o2) {
+                if (o1.getCpuBurst()< o2.getCpuBurst()) {
+                    return -1;
+                }
+                if (o1.getCpuBurst()> o2.getCpuBurst()) {
+                    return 1;
+                }
+                return 0;
+            }
+
+        });
+        
 
     }
 
@@ -230,9 +232,10 @@ public class Execution {
                 } else if (grantChartTimeLine.contains(j)) {
                     if (j == grantChartTimeLine.getLast()) {
                         System.out.print(j + "  *");
-                    }else
-                    System.out.print(j + " ");
-                    
+                    } else {
+                        System.out.print(j + " ");
+                    }
+
                 } else {
                     System.out.print(" ");
                 }

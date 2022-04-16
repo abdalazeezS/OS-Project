@@ -19,16 +19,12 @@ public class OSProject {
 
             while ((st = bufferedReader.readLine()) != null) {
                 memorySize = Integer.parseInt(st);
-                //System.out.println(memorySize);
 
                 pageSize = Integer.parseInt(bufferedReader.readLine());
-                //System.out.println(pageSize);
 
                 roundRoubinQ = Integer.parseInt(bufferedReader.readLine());
-                //System.out.println(roundRoubinQ);
 
                 contextSwitch = Integer.parseInt(bufferedReader.readLine());
-                //System.out.println(contextSwitch);
 
                 while ((st = bufferedReader.readLine()) != null) {
                     String[] processData = st.split(" ");
@@ -40,10 +36,6 @@ public class OSProject {
                     Process process = new Process(processId, arrivalTime, cpuBurst, sizeInBytes);
                     processesList.add(process);
 
-//                    for (String data : processData) {
-//                        System.out.print(data + " ");
-//                    }
-//                    System.out.println();
                 }
 
                 if (st == null) {

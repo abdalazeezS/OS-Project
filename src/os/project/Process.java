@@ -1,12 +1,12 @@
 package os.project;
 
 public class Process {
+
     private int processId;
     private int arrivalTime;
     private int cpuBurst;
     private int sizeIntBytes;
-    
-    
+
     public Process(int processId, int arrivalTime, int cpuBurst, int sizeIntBytes) {
         this.processId = processId;
         this.arrivalTime = arrivalTime;
@@ -29,5 +29,5 @@ public class Process {
     public int getSizeIntBytes() {
         return sizeIntBytes;
     }
-    
+
 }
