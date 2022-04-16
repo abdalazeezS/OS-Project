@@ -5,7 +5,17 @@ public class Process {
     private int arrivalTime;
     private int cpuBurst;
     private int sizeIntBytes;
+    private int waitingTime;
+    private int turnAroundTime;
+    private int finishTime;
 
+    public Process(int waitingTime, int turnAroundTime, int finishTime) {
+        this.waitingTime = waitingTime;
+        this.turnAroundTime = turnAroundTime;
+        this.finishTime = finishTime;
+    }
+
+    
     public Process(int processId, int arrivalTime, int cpuBurst, int sizeIntBytes) {
         this.processId = processId;
         this.arrivalTime = arrivalTime;
@@ -28,7 +38,5 @@ public class Process {
     public int getSizeIntBytes() {
         return sizeIntBytes;
     }
-    
-    
     
 }

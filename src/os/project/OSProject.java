@@ -8,24 +8,27 @@ import java.util.LinkedList;
 public class OSProject {
 
     public static void main(String[] args) {
+
         LinkedList<Process> processesList = new LinkedList();
         File processFile = new File("processes.txt");
+        int memorySize, pageSize, roundRoubinQ, contextSwitch;
+
         try {
             BufferedReader bufferedReader = new BufferedReader(new FileReader(processFile));
             String st;
 
             while ((st = bufferedReader.readLine()) != null) {
-                int memorySize = Integer.parseInt(st);
-                System.out.println(memorySize);
+                memorySize = Integer.parseInt(st);
+                //System.out.println(memorySize);
 
-                int pageSize = Integer.parseInt(bufferedReader.readLine());
-                System.out.println(pageSize);
+                pageSize = Integer.parseInt(bufferedReader.readLine());
+                //System.out.println(pageSize);
 
-                int roundRoubinQ = Integer.parseInt(bufferedReader.readLine());
-                System.out.println(roundRoubinQ);
+                roundRoubinQ = Integer.parseInt(bufferedReader.readLine());
+                //System.out.println(roundRoubinQ);
 
-                int contextSwitch = Integer.parseInt(bufferedReader.readLine());
-                System.out.println(contextSwitch);
+                contextSwitch = Integer.parseInt(bufferedReader.readLine());
+                //System.out.println(contextSwitch);
 
                 while ((st = bufferedReader.readLine()) != null) {
                     String[] processData = st.split(" ");
@@ -37,14 +40,15 @@ public class OSProject {
                     Process process = new Process(processId, arrivalTime, cpuBurst, sizeInBytes);
                     processesList.add(process);
 
-                    for (String data : processData) {
-                        System.out.print(data + " ");
-                    }
-                    System.out.println();
+//                    for (String data : processData) {
+//                        System.out.print(data + " ");
+//                    }
+//                    System.out.println();
                 }
-                
-                if (st == null){
-                    System.out.println("Finish reading !");
+
+                if (st == null) {
+                    Execution execution = new Execution(processesList, contextSwitch);
+                    execution.FCFC();
                 }
 
             }
