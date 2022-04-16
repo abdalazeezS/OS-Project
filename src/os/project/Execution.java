@@ -122,7 +122,7 @@ public class Execution {
         System.out.println("");
 
         // drawing the Grant Chart
-        print_rectangle(3, 80);
+        print_rectangle(3, list.size()*16);
 
         System.out.println("Process ID      Waiting Time        Turn Aroung Time        Finish Time");
 
@@ -228,10 +228,11 @@ public class Execution {
                         || j == 1) {
                     System.out.print("*");
                 } else if (grantChartTimeLine.contains(j)) {
-                    System.out.print(j + " ");
                     if (j == grantChartTimeLine.getLast()) {
                         System.out.print(j + "  *");
-                    }
+                    }else
+                    System.out.print(j + " ");
+                    
                 } else {
                     System.out.print(" ");
                 }
