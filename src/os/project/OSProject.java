@@ -42,7 +42,7 @@ public class OSProject {
                     Execution execution = new Execution(processesList, contextSwitch);
                     execution.FCFC();
                     System.out.println("###############################################################");
-                    execution.SJF();
+                    // execution.SJF();
                 }
 
             }
