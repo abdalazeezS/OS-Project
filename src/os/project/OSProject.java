@@ -41,8 +41,8 @@ public class OSProject {
                 if (st == null) {
                     Execution execution = new Execution(processesList, contextSwitch);
                     execution.FCFC();
-                    System.out.println("###############################################################");
-                    // execution.SJF();
+                    //System.out.println("###############################################################");
+                    execution.SJF();
                 }
 
             }

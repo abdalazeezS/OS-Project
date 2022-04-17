@@ -42,7 +42,7 @@ public class Execution {
     LinkedList<Integer> turnArounTime;
 
     void FCFC() {
-        System.out.println("First Come First Serve Shceduling Algorithm:\n");
+        System.out.println("First Come First Serve Shceduling Algorithm:");
 
         //sort the processes based on the Arrival Time
         Collections.sort(list, new Comparator<Process>() {
@@ -62,6 +62,8 @@ public class Execution {
         finishTime = new LinkedList<>();
         grantChartTimeLine = new LinkedList<>();
         startTime = new LinkedList<>();
+
+        // currentTime used to check if the process is arrived or not in order to schedule it
         int currentTime = 0;
 
         for (int i = 0; i < list.size(); i++) {
@@ -99,17 +101,16 @@ public class Execution {
             } else {
                 grantChartTimeLine.add(finishTime.get(i));
                 grantChartTimeLine.add(finishTime.get(i) + this.contextSwitch);
-
-                //System.out.print(finishTime.get(i) + " " + (finishTime.get(i) + this.contextSwitch) + " ");
             }
         }
 
+        // calculating waiting time for each process
         waitingTime = new LinkedList<>();
-
         for (int i = 0; i < startTime.size(); i++) {
             waitingTime.add(startTime.get(i) - list.get(i).getArrivalTime());
         }
 
+        // calculating turn around time for each process
         turnArounTime = new LinkedList<>();
         for (int i = 0; i < list.size(); i++) {
             turnArounTime.add(finishTime.get(i) - list.get(i).getArrivalTime());
@@ -118,22 +119,18 @@ public class Execution {
         System.out.println("");
 
         System.out.println("Processes Arrangement in the grant chart: ");
-        for (int i = 0; i < list.size(); i++) {
-            if (i != list.size() - 1 && Math.abs(finishTime.get(i) - startTime.get(i + 1)) == this.contextSwitch) {
-                System.out.print("p" + list.get(i).getProcessId() + " CS ");
-            } else {
-                System.out.print("p" + list.get(i).getProcessId() + " ");
-            }
+        for (int i = 0; i < list.size() - 1; i++) {
+            System.out.print("p" + list.get(i).getProcessId() + " ");
         }
+        System.out.print(" (with context switch between processes = " + this.contextSwitch + ")");
         System.out.println();
 
-        // drawing the Grant Chart, not a perfect rectangle but it is good :)
+        // drawing the Grant Chart containing time, not a perfect rectangle but it is good :)
         print_rectangle(3, list.size() * 16);
 
         System.out.print("\n\n");
 
-        System.out.println("Process ID      Waiting Time        Turn Aroung Time        Finish Time");
-
+        System.out.println("Process ID      Waiting Time        Turn Around Time        Finish Time");
         /* here I used a map data structure just to collect the processes with their information together and arrange them
            appropriately, because the output will be like this;
         
@@ -216,7 +213,165 @@ public class Execution {
     }
 
     void SJF() {
+        System.out.println("Shortest Job First (non-preemptive) Shceduling Algorithm:\n");
 
+        //sort the processes based on the CPU burst Time
+        Collections.sort(list, new Comparator<Process>() {
+            @Override
+            public int compare(Process o1, Process o2) {
+                if (o1.getArrivalTime() < o2.getArrivalTime()) {
+                    return -1;
+                }
+                if (o1.getArrivalTime() > o2.getArrivalTime()) {
+                    return 1;
+                }
+                return 0;
+            }
+        });
+
+        finishTime = new LinkedList<>();
+        grantChartTimeLine = new LinkedList<>();
+        startTime = new LinkedList<>();
+
+        // currentTime used to check if the process is arrived or not in order to schedule it
+        int currentTime = 0;
+
+        startTime.add(list.get(0).getArrivalTime());
+
+        finishTime.add(list.get(0).getCpuBurstTime() + list.get(0).getArrivalTime());
+
+        grantChartTimeLine.add(list.get(0).getArrivalTime());
+        grantChartTimeLine.add(list.get(0).getCpuBurstTime() + list.get(0).getArrivalTime());
+        grantChartTimeLine.add(list.get(0).getCpuBurstTime() + this.contextSwitch);
+        currentTime += (list.get(0).getCpuBurstTime() + this.contextSwitch);
+
+        LinkedList<Process> arrivedProcesses = new LinkedList<>();
+
+        for (int i = 1; i < list.size(); i++) {
+
+            // using p just to make it easier to access the Process object instead of writing list.get(i) every time
+            Process p = list.get(i);
+
+            // get the processes based on arrival time
+            if (p.getArrivalTime() < currentTime) {
+                arrivedProcesses.add(p);
+                currentTime += p.getCpuBurstTime() + this.contextSwitch;
+            }
+//            if ((p.getArrivalTime() < currentTime && list.get(i + 1).getArrivalTime() < currentTime)
+//                    && (p.getCpuBurstTime() < list.get(i + 1).getCpuBurstTime())) {
+//                startTime.add(finishTime.get(i - 1) + this.contextSwitch);
+//                System.out.println(startTime.get(i));
+//                finishTime.add(startTime.get(i) + p.getCpuBurstTime());
+//                System.out.println(finishTime.get(i));
+//                currentTime+=p.getCpuBurstTime()+this.contextSwitch;
+//            }
+        }
+
+        // sort the processes based on the CPU Burst
+        Collections.sort(arrivedProcesses, new Comparator<Process>() {
+            @Override
+            public int compare(Process o1, Process o2) {
+                if (o1.getCpuBurstTime() < o2.getCpuBurstTime()) {
+                    return -1;
+                }
+                if (o1.getCpuBurstTime() > o2.getCpuBurstTime()) {
+                    return 1;
+                }
+                return 0;
+            }
+        });
+
+//        for (Process p : arrivedProcesses) {
+//            System.out.println(p.getProcessId() + " " + p.getCpuBurstTime());
+//        }
+        for (int i = 0; i < arrivedProcesses.size(); i++) {
+            if (i == 0) {
+                startTime.add(finishTime.get(0) + this.contextSwitch);
+                finishTime.add(startTime.get(1) + arrivedProcesses.get(i).getCpuBurstTime());
+                grantChartTimeLine.add(finishTime.get(1));
+            } else {
+                startTime.add(finishTime.get(i) + this.contextSwitch);
+                grantChartTimeLine.add(startTime.get(i + 1));
+                finishTime.add(finishTime.get(i) + arrivedProcesses.get(i).getCpuBurstTime() + this.contextSwitch);
+                grantChartTimeLine.add(finishTime.get(i + 1));
+            }
+        }
+
+//        System.out.println("start times: ");
+//        for (int st : startTime) {
+//            System.out.print(st + " ");
+//        }
+//        System.out.println("");
+//
+//        System.out.println("finish times: ");
+//        for (int ft : finishTime) {
+//            System.out.print(ft + " ");
+//        }
+//        System.out.println("");
+//
+//        System.out.println("grant chart times: ");
+//        for (int gt : grantChartTimeLine) {
+//            System.out.print(gt + " ");
+//        }
+//        System.out.println("");
+
+        arrivedProcesses.addFirst(list.get(0));
+        System.out.println("Processes Arrangement in the grant chart: ");
+        for (Process p : arrivedProcesses) {
+            System.out.print("p" + p.getProcessId() + "  ");
+        }
+        System.out.print("(with context switch between processes = " + this.contextSwitch + ")");
+
+        System.out.println("");
+        print_rectangle(3, list.size() * 16);
+        System.out.print("\n\n");
+        
+        // calculating waiting time for each process
+        waitingTime = new LinkedList<>();
+        for (int i = 0; i < startTime.size(); i++) {
+            waitingTime.add(startTime.get(i) - list.get(i).getArrivalTime());
+        }
+
+        // calculating turn around time for each process
+        turnArounTime = new LinkedList<>();
+        for (int i = 0; i < list.size(); i++) {
+            turnArounTime.add(finishTime.get(i) - list.get(i).getArrivalTime());
+        }
+        
+        double sumFinishTime = 0;
+        for (int ft : finishTime) {
+            sumFinishTime += ft;
+        }
+        double avgFinishTime = sumFinishTime / list.size();
+        System.out.println("Average Finish Time: " + avgFinishTime + " time unit.");
+
+        double sumWainting = 0;
+        for (int wt : waitingTime) {
+            sumWainting += wt;
+        }
+        double avgWaitingTime = sumWainting / list.size();
+        System.out.println("Average Waiting Time: " + avgWaitingTime + " time unit.");
+
+        double sumTurnAroundTime = 0;
+        for (int tat : turnArounTime) {
+            sumTurnAroundTime += tat;
+        }
+        double avgTurnArounTime = sumTurnAroundTime / list.size();
+        System.out.println("Average Turnaround Time: " + avgTurnArounTime + " time unit.");
+
+        double sumBurstTime = 0;
+        for (Process process : list) {
+            sumBurstTime += process.getCpuBurstTime();
+        }
+        double cpuUtilization = (sumBurstTime / (sumBurstTime + this.contextSwitch * (list.size() - 1))) * 100;
+
+        // just for formating the CPU utilization for 2 decmial digits
+        DecimalFormat decimalFormat = new DecimalFormat("0.00");
+        System.out.println("CPU Utilization: " + decimalFormat.format(cpuUtilization) + " %");
+
+        // clear the common lists so the other Algorithms can use them
+        grantChartTimeLine.clear();
+        finishTime.clear();
     }
 
     void RR(int q) {
@@ -224,7 +379,7 @@ public class Execution {
     }
 
     private void print_rectangle(int n, int m) {
-        System.out.println("\nGrant Chart:\n");
+        System.out.println("\nGrant Chart (present time):\n");
         int i, j;
         for (i = 1; i <= n; i++) {
             for (j = 1; j <= m; j++) {
@@ -244,5 +399,7 @@ public class Execution {
             }
             System.out.println();
         }
+
     }
+
 }
