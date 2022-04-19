@@ -39,10 +39,17 @@ public class OSProject {
                 }
 
                 if (st == null) {
-                    Execution execution = new Execution(processesList, contextSwitch);
+                    ProcessesScheduling execution = new ProcessesScheduling(processesList, contextSwitch);
+                    
                     execution.FCFC();
-                    //System.out.println("###############################################################");
+                    
+                    System.out.println("\n###############################################################\n");
+                    
                     execution.SJF();
+                    
+                    System.out.println("\n###############################################################\n");
+                    
+                    execution.RR(roundRoubinQ);
                 }
 
             }
